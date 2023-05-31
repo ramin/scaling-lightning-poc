@@ -1,0 +1,4 @@
+apiVersion: v2
+name: scaling-lightning-poc
+description: A Helm chart to deploy signet/regtest lightning network nodes
+version: 0.0.1
