@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ $instance.name }}
-        image: yourregistry/bitcoind:{{ default "0.23.0" $instance.version }}
+        image: scalinglightning/bitcoind:{{ default "0.23.0" $instance.version }}
         ports:
         - containerPort: 8332
         volumeMounts:
