@@ -25,7 +25,7 @@ spec:
           mountPath: /var/lib/bitcoin
         {{- if default true $instance.sidecar_enabled }}
         - name: sidecar
-          image: yourregistry/sidecar:latest
+          image: scalinglightning/sidecar:latest
           ports:
             - containerPort: 1234
         {{- end }}
