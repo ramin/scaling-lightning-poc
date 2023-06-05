@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  {{- range $i := until (int .Values.bitcoind.instanceCount) }}
+  {{ printf "bitcoind-config-%d" (add $i 1) }}: |-
+    # Put your configuration here.
+    # This is an example of what it could look like:
+    rpcuser=bitcoinrpc
+    rpcpassword=local321
+  {{- end }}

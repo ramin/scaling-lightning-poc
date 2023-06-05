@@ -1,0 +1,15 @@
+{{- range $i := until (int .Values.bitcoind.instanceCount) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "bitcoind-service-%d" (add $i 1) }}
+spec:
+  selector:
+    target: {{ printf "bitcoind-%d" (add $i 1) }}
+  ports:
+    - protocol: TCP
+      port: 8332
+      targetPort: 8332
+  type: NodePort
+---
+{{- end }}

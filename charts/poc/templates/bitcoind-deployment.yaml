@@ -1,28 +1,41 @@
-{{- range .Values.bitcoind.instances }}
+{{- range $i, $instance := .Values.bitcoind.instances }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: {{ .name }}
+  name: {{ $instance.name }}
+  target: target: {{ printf "bitcoind-%d" (add $i 1) }}
 spec:
+  serviceName: "bitcoind"
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .name }}
+      app: {{ $instance.name }}
   template:
     metadata:
       labels:
-        app: {{ .name }}
+        app: {{ $instance.name }}
     spec:
       containers:
-        - name: {{ .name }}
-          image: scaling-lightning/bitcoind:{{ default "0.23.0" .version }}
-          ports:
-            - containerPort: 8332
-        {{- if default true .sidecar_enabled }}
+      - name: {{ $instance.name }}
+        image: yourregistry/bitcoind:{{ default "0.23.0" $instance.version }}
+        ports:
+        - containerPort: 8332
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/bitcoin
+        {{- if default true $instance.sidecar_enabled }}
         - name: sidecar
-          image: scaling-lightning/sidecar:latest
+          image: yourregistry/sidecar:latest
           ports:
             - containerPort: 1234
         {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
 ---
 {{- end }}
